@@ -2,6 +2,25 @@ const express = require('express')//Import the Express framework
 const app = express()//Create an instance of the Express application
 const port = 4000//Define the port number where the app will listen
 
+const cors = require('cors');
+app.use(cors());
+app.use(function(req, res, next) {
+res.header("Access-Control-Allow-Origin", "*");
+res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+res.header("Access-Control-Allow-Headers",
+"Origin, X-Requested-With, Content-Type, Accept");
+next();
+});
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.post('/api/book', (req, res)=>{
+    console.log(req.body)
+    res.send("Data Received!");
+})
+
 //Define a route that has a message when the root URL is acessed
 app.get('/', (req, res) => {
     res.send('Hello World')
@@ -58,17 +77,23 @@ app.get('/api/books', (req, res) => {
     })
 })
 
+
 //Starts the Express app and listens on the specified port
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
 
-const cors = require('cors');
-app.use(cors());
-app.use(function(req, res, next) {
-res.header("Access-Control-Allow-Origin", "*");
-res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-res.header("Access-Control-Allow-Headers",
-"Origin, X-Requested-With, Content-Type, Accept");
-next();
-});
+const [data, setData]=userState({});
+
+for(let i=0;i<10000000000;i++){}
+axios.get('http://localhost:4000.api/books')
+.then(
+    (response)=>{
+        setData(response.data.myBooks)
+    }
+)
+.catch(
+    (error)=>{
+        console.log(error);
+    }
+)
